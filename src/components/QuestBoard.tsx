@@ -22,6 +22,7 @@ interface QuestBoardProps {
   onOpenQuest: (quest: Quest) => void;
   onCompleteQuest: (questId: string) => void;
   onAddQuest: (newQuest: Quest) => void;
+  onOpenAiGameMaster?: () => void;
 }
 
 export const QuestBoard: React.FC<QuestBoardProps> = ({
@@ -29,6 +30,7 @@ export const QuestBoard: React.FC<QuestBoardProps> = ({
   onOpenQuest,
   onCompleteQuest,
   onAddQuest,
+  onOpenAiGameMaster,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -102,16 +104,31 @@ export const QuestBoard: React.FC<QuestBoardProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            sound.playClick();
-            setShowAddModal(true);
-          }}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-cyan-500/20 hover:brightness-110 active:scale-95 transition-all self-start sm:self-center"
-        >
-          <Plus className="h-4 w-4" />
-          <span>NEW QUEST</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+          {onOpenAiGameMaster && (
+            <button
+              onClick={() => {
+                sound.playClick();
+                onOpenAiGameMaster();
+              }}
+              className="flex items-center gap-2 rounded-xl border border-indigo-500/40 bg-indigo-950/60 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-indigo-300 hover:bg-indigo-900/60 hover:text-white transition-all shadow-md active:scale-95"
+            >
+              <Sparkles className="h-4 w-4 text-indigo-400" />
+              <span>AI RECOMMEND QUESTS</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              sound.playClick();
+              setShowAddModal(true);
+            }}
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-4 py-2.5 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-cyan-500/20 hover:brightness-110 active:scale-95 transition-all"
+          >
+            <Plus className="h-4 w-4" />
+            <span>NEW QUEST</span>
+          </button>
+        </div>
       </div>
 
       {/* Category Filter Chips */}

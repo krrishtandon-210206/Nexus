@@ -311,6 +311,10 @@ export default function App() {
             quests={quests}
             onOpenQuest={(quest) => setActiveQuestModal(quest)}
             onCompleteQuest={handleCompleteQuest}
+            onOpenAiGameMaster={() => {
+              sound.playClick();
+              setActiveTab('gamemaster');
+            }}
             onAddQuest={(newQ) => {
               setQuests((prev) => [newQ, ...prev]);
               showToast('⚔️ Custom Quest Created', newQ.title);
