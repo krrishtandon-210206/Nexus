@@ -3,6 +3,8 @@
 > **"Build the future you."**
 > A hackathon-winning, production-grade AI-powered Student Life Operating System that converts real-world academic coursework, skill mastery, career preparation, and personal stamina into an immersive RPG progression framework.
 
+🎮 **Live Demo:** [https://nexus-rpg.ai.studio](https://nexus-rpg.ai.studio)
+
 ---
 
 ## 🌟 Core Concept & Product Loop
@@ -108,7 +110,7 @@ npm run start
 
 ## 🏆 Hackathon Judges' Quick Tour
 
-Click the **"JUDGES QUICK TOUR"** button in the top navigation banner to test-drive all 8 core mechanics in one seamless interactive showcase:
+Experience the live app at [https://nexus-rpg.ai.studio](https://nexus-rpg.ai.studio) or click the **"JUDGES QUICK TOUR"** button in the top navigation banner to test-drive all 8 core mechanics in one seamless interactive showcase:
 1. **Command Center**: View Character Vitals, Energy Reserves, and Today's Agenda.
 2. **AI Game Master**: Request an instant personalized quest strategy based on your time constraints.
 3. **Quest Board**: Execute high-impact coursework tasks.
