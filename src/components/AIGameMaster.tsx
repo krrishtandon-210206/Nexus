@@ -80,7 +80,7 @@ export const AIGameMaster: React.FC<AIGameMasterProps> = ({
   ];
 
   const handleGeneratePlan = async (queryText?: string, timeMins?: number) => {
-    const textToSend = queryText || userInput || 'I have limited time tonight.';
+    const textToSend = (queryText || userInput).trim() || 'I have limited study time tonight. Recommend an optimal session plan.';
     const timeVal = timeMins || availableTime;
     
     setIsLoading(true);
@@ -107,7 +107,9 @@ export const AIGameMaster: React.FC<AIGameMasterProps> = ({
 
       if (res.ok) {
         const data = await res.json();
-        setCurrentPlan(data);
+        if (data && (data.planTitle || (Array.isArray(data.quests) && data.quests.length > 0))) {
+          setCurrentPlan(data);
+        }
       }
     } catch (err) {
       console.error('Game Master error:', err);

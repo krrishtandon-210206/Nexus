@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BossBattle, BossWeapon } from '../types';
 import { sound } from '../utils/sound';
 import confetti from 'canvas-confetti';
@@ -23,7 +23,7 @@ interface BossBattlesProps {
   bosses: BossBattle[];
   onDefeatBoss: (bossId: string, xpReward: number, skills: { skill: string; boost: number }[]) => void;
   onStartRapidFire: (topic: string) => void;
-  onGenerateCustomBoss: (challengeName: string, challengeType: string) => void;
+  onGenerateCustomBoss: (newBoss: BossBattle) => void;
 }
 
 export const BossBattles: React.FC<BossBattlesProps> = ({
@@ -39,7 +39,19 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [damagePopup, setDamagePopup] = useState<{ amount: number; text: string } | null>(null);
 
+  // Keep active list synced if new bosses are added externally
+  useEffect(() => {
+    setActiveBossList(bosses);
+  }, [bosses]);
+
   const currentBoss = activeBossList.find((b) => b.id === selectedBossId) || activeBossList[0];
+
+  const quickBossSuggestions = [
+    { name: 'Distributed Systems Final Exam', type: 'EXAM', label: '🐉 Distributed Systems Exam' },
+    { name: 'Amazon SDE Technical Interview', type: 'CAREER', label: '🤖 SDE Tech Interview' },
+    { name: 'Hackathon Grand Finale Demo', type: 'HACKATHON', label: '🏆 Hackathon Demo' },
+    { name: 'Database Management Lab Practical', type: 'EXAM', label: '👹 DBMS Lab Exam' },
+  ];
 
   const handleWeaponAttack = (weapon: BossWeapon, weaponIdx: number) => {
     if (!currentBoss || currentBoss.defeated || weapon.used) return;
@@ -83,9 +95,11 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
     }
   };
 
-  const handleGenerateBoss = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customInput.trim()) return;
+  const handleGenerateBoss = async (e?: React.FormEvent, presetName?: string, presetType?: string) => {
+    if (e) e.preventDefault();
+    const challengeTitle = (presetName || customInput).trim();
+    const challengeCategory = presetType || customType;
+    if (!challengeTitle) return;
 
     sound.playClick();
     setIsGenerating(true);
@@ -95,8 +109,8 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          challengeName: customInput.trim(),
-          challengeType: customType,
+          challengeName: challengeTitle,
+          challengeType: challengeCategory,
           daysRemaining: 4,
         }),
       });
@@ -105,15 +119,15 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
         const data = await res.json();
         const newBoss: BossBattle = {
           id: `custom-boss-${Date.now()}`,
-          bossName: data.bossName || `Titan of ${customInput}`,
+          bossName: data.bossName || `Titan of ${challengeTitle}`,
           title: data.title || 'Custom Challenge Boss',
-          challengeType: customType as any,
+          challengeType: challengeCategory as any,
           difficultyPercentage: data.difficultyPercentage || 80,
           currentHp: data.totalHp || 1000,
           maxHp: data.totalHp || 1000,
           lore: data.lore || 'An intimidating challenge synthesized from your upcoming milestone.',
           weaknesses: data.weaknesses || ['Core Fundamentals', 'Speed Problem Solving', 'Mock Practice'],
-          prepWeapons: data.prepWeapons || [
+          prepWeapons: data.prepWeapons ? data.prepWeapons.map((w: any) => ({ ...w, used: false })) : [
             { name: 'Targeted Concept Sprint', damage: 250, time: '30m', xp: 120, skill: 'Focus +8', used: false },
             { name: 'Previous Paper Breakdown', damage: 300, time: '40m', xp: 150, skill: 'Readiness +10', used: false },
             { name: 'AI Rapid-Fire Quiz', damage: 200, time: '15m', xp: 90, skill: 'Recall +6', used: false },
@@ -121,15 +135,16 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
           ],
           rewards: data.rewards || {
             xp: 500,
-            skills: [{ skill: customInput, boost: 12 }],
-            badge: 'Conqueror',
+            skills: [{ skill: challengeTitle, boost: 12 }],
+            badge: `${challengeTitle} Conqueror`,
           },
           defeated: false,
         };
 
-        setActiveBossList([newBoss, ...activeBossList]);
+        setActiveBossList((prev) => [newBoss, ...prev]);
         setSelectedBossId(newBoss.id);
         setCustomInput('');
+        onGenerateCustomBoss(newBoss);
       }
     } catch (err) {
       console.error('Boss generation error:', err);
@@ -389,7 +404,7 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
           Have an upcoming midterm, term project, or placement drive? Let the AI transform it into a full Boss encounter with customized preparation weapons.
         </p>
 
-        <form onSubmit={handleGenerateBoss} className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={(e) => handleGenerateBoss(e)} className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             required
@@ -414,9 +429,28 @@ export const BossBattles: React.FC<BossBattlesProps> = ({
             className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-indigo-600 px-6 py-2.5 text-xs sm:text-sm font-extrabold text-white shadow-lg shadow-rose-500/20 hover:brightness-110 active:scale-95 disabled:opacity-50 transition-all shrink-0"
           >
             {isGenerating ? <Sparkles className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            <span>GENERATE BOSS</span>
+            <span>{isGenerating ? 'FORGING BOSS...' : 'GENERATE BOSS'}</span>
           </button>
         </form>
+
+        {/* Quick Suggestion Chips */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="text-[11px] font-bold text-slate-500">Quick Presets:</span>
+          {quickBossSuggestions.map((preset) => (
+            <button
+              key={preset.name}
+              type="button"
+              onClick={() => {
+                setCustomInput(preset.name);
+                setCustomType(preset.type);
+                handleGenerateBoss(undefined, preset.name, preset.type);
+              }}
+              className="rounded-lg border border-slate-800 bg-slate-950/80 px-2.5 py-1 text-xs text-slate-300 hover:border-rose-500/40 hover:text-rose-300 transition-colors"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

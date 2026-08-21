@@ -346,8 +346,9 @@ export default function App() {
             bosses={bosses}
             onDefeatBoss={handleDefeatBoss}
             onStartRapidFire={(topic) => setRapidFireTopic(topic)}
-            onGenerateCustomBoss={(name, type) => {
-              showToast('🐉 Dynamic Boss Synthesized', name);
+            onGenerateCustomBoss={(newBoss) => {
+              setBosses((prev) => [newBoss, ...prev]);
+              showToast('🐉 Dynamic Boss Synthesized', newBoss.bossName);
             }}
           />
         )}

@@ -36,19 +36,21 @@ function cleanAndParseJson<T>(rawText: string | undefined | null, fallback: T): 
   if (!rawText || typeof rawText !== "string") return fallback;
   try {
     let clean = rawText.trim();
-    // Strip markdown code fences if present (```json ... ``` or ``` ...)
-    if (clean.startsWith("```")) {
-      clean = clean.replace(/^```(?:json)?\s*/i, "");
-      clean = clean.replace(/\s*```$/, "");
+    // Strip markdown code fences if present anywhere (```json ... ``` or ``` ...)
+    if (clean.includes("```")) {
+      clean = clean.replace(/```(?:json)?\s*([\s\S]*?)\s*```/gi, "$1").trim();
+      clean = clean.replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
     }
     // Attempt standard JSON parse
-    return JSON.parse(clean);
+    const parsed = JSON.parse(clean);
+    return parsed && typeof parsed === "object" ? parsed : fallback;
   } catch (err) {
     // Attempt regex extraction of first JSON object or array
     try {
       const match = rawText.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
       if (match) {
-        return JSON.parse(match[0]);
+        const extracted = JSON.parse(match[0]);
+        return extracted && typeof extracted === "object" ? extracted : fallback;
       }
     } catch (innerErr) {
       console.warn("Could not parse JSON from model output, utilizing dynamic fallback");
@@ -289,30 +291,79 @@ Rules:
   }
 });
 
-// 2. BOSS BATTLE GENERATOR
-app.post("/api/gemini/boss-generator", async (req: Request, res: Response) => {
-  const { challengeName, challengeType, daysRemaining, difficulty, playerSkill } = req.body;
-  const name = challengeName || "Operating Systems Final Exam";
-  
-  const fallback = {
-    bossName: `Titan of ${name}`,
-    title: "Semester Final Boss",
-    difficultyPercentage: difficulty || 82,
+// Dynamic fallback generator for Boss Battles
+function generateDynamicBossFallback(challengeName: string = "Operating Systems Final Exam", challengeType: string = "EXAM", difficulty?: number) {
+  const name = challengeName.trim() || "Operating Systems Final Exam";
+  const type = challengeType || "EXAM";
+  const nameLower = name.toLowerCase();
+
+  let bossTitle = "Semester Final Boss";
+  let bossPrefix = "Titan";
+  let lore = `An intimidating adversary manifesting from ${name}. Its formidable defenses test your conceptual depth and problem-solving execution under pressure.`;
+  let weaknesses = ["Core Fundamentals", "Speed Problem Solving", "Mock Battle Practice"];
+  let weapons = [
+    { name: `Concept Sprint: ${name} Core`, damage: 250, time: "25m", xp: 120, skill: `${name} Mastery +8`, used: false },
+    { name: `High-Yield Past Problem Gauntlet`, damage: 300, time: "35m", xp: 150, skill: "Problem Solving +10", used: false },
+    { name: `AI Rapid-Fire Combat Duel`, damage: 200, time: "15m", xp: 90, skill: "Recall Speed +7", used: false },
+    { name: `Timed Mock Exam Simulation`, damage: 250, time: "40m", xp: 140, skill: "Exam Readiness +12", used: false },
+  ];
+
+  if (type === "CAREER" || nameLower.includes("interview") || nameLower.includes("sde") || nameLower.includes("faang") || nameLower.includes("placement")) {
+    bossTitle = "Tech Screen Final Boss";
+    bossPrefix = "Colossus";
+    lore = `A ruthless technical screening entity simulating top-tier tech interview loops. It evaluates algorithmic precision, complexity analysis, and edge case resilience.`;
+    weaknesses = ["Algorithmic Optimization", "Time & Space Complexity Proofs", "STAR Behavioral Clarity"];
+    weapons = [
+      { name: "Live DSA Whiteboard Gauntlet", damage: 300, time: "45m", xp: 180, skill: "DSA +16", used: false },
+      { name: "System Design Blueprint Drill", damage: 250, time: "35m", xp: 140, skill: "System Architecture +12", used: false },
+      { name: "Behavioral STAR Narrative Polish", damage: 200, time: "20m", xp: 100, skill: "Communication +10", used: false },
+      { name: "Mock Pressure Coding Duel", damage: 250, time: "30m", xp: 130, skill: "Execution Speed +14", used: false },
+    ];
+  } else if (type === "HACKATHON" || nameLower.includes("hackathon") || nameLower.includes("capstone") || nameLower.includes("project")) {
+    bossTitle = "Hackathon Judging Demon";
+    bossPrefix = "Demon";
+    lore = `A critical panel of judges demanding innovative architecture, production readiness, and an unforgettable demo pitch.`;
+    weaknesses = ["Fullstack Integration", "Live Demo Reliability", "Compelling Value Pitch"];
+    weapons = [
+      { name: "Core Feature Sprint & API Hardening", damage: 350, time: "60m", xp: 200, skill: "Fullstack +18", used: false },
+      { name: "UI/UX Micro-Interactions & Polish", damage: 200, time: "30m", xp: 110, skill: "Frontend Craft +10", used: false },
+      { name: "Pitch Deck & Impact Metrics Drill", damage: 250, time: "25m", xp: 130, skill: "Storytelling +12", used: false },
+      { name: "Demo Stress-Test & Failover Check", damage: 200, time: "20m", xp: 110, skill: "DevOps +8", used: false },
+    ];
+  } else if (nameLower.includes("os") || nameLower.includes("operating")) {
+    bossTitle = "Semester OS Final Boss";
+    bossPrefix = "Dragon";
+    lore = "An ancient computational menace formed from convoluted deadlock states, paging thrashing, and thread race conditions.";
+    weaknesses = ["Deadlock Prevention (Banker's Algorithm)", "CPU Scheduling Preemption", "Virtual Memory Page Replacement"];
+    weapons = [
+      { name: "Deadlock & Semaphore Mastery Sprint", damage: 250, time: "30m", xp: 130, skill: "OS Concurrency +10", used: false },
+      { name: "CPU Scheduling Past Exam Papers", damage: 300, time: "40m", xp: 160, skill: "Scheduling Analysis +14", used: false },
+      { name: "Virtual Memory Paging Drill", damage: 200, time: "20m", xp: 100, skill: "Memory Systems +8", used: false },
+      { name: "OS Final Mock Simulation", damage: 250, time: "40m", xp: 140, skill: "Exam Readiness +15", used: false },
+    ];
+  }
+
+  return {
+    bossName: `${bossPrefix} of ${name}`,
+    title: bossTitle,
+    difficultyPercentage: difficulty || 84,
     totalHp: 1000,
-    lore: `An ancient computational menace formed from convoluted deadlock states and high-stakes ${name} challenges.`,
-    weaknesses: ["Deadlock Prevention", "Process Scheduling Algorithms", "Virtual Memory Paging"],
-    prepWeapons: [
-      { name: "Concept Quest: Core Principles", damage: 250, time: "25m", xp: 120, skill: `${name} Internals +8` },
-      { name: "High-Yield Past Paper Gauntlet", damage: 300, time: "35m", xp: 150, skill: "Problem Solving +10" },
-      { name: "AI Rapid-Fire Duel", damage: 200, time: "15m", xp: 90, skill: "Recall Speed +7" },
-      { name: "Mock Exam Battle Simulation", damage: 250, time: "40m", xp: 140, skill: "Exam Readiness +12" },
-    ],
+    lore,
+    weaknesses,
+    prepWeapons: weapons,
     rewards: {
       xp: 500,
       skills: [{ skill: name, boost: 14 }, { skill: "Problem Solving", boost: 8 }],
       badge: `${name} Conqueror`,
     },
   };
+}
+
+// 2. BOSS BATTLE GENERATOR
+app.post("/api/gemini/boss-generator", async (req: Request, res: Response) => {
+  const { challengeName, challengeType, daysRemaining, difficulty, playerSkill } = req.body;
+  const name = challengeName || "Operating Systems Final Exam";
+  const fallback = generateDynamicBossFallback(name, challengeType, difficulty);
 
   try {
     const ai = getAI();
@@ -343,6 +394,14 @@ Output strict JSON with:
     });
 
     const parsed = cleanAndParseJson(response.text, fallback);
+    if (!parsed || !Array.isArray(parsed.prepWeapons) || parsed.prepWeapons.length === 0) {
+      return res.json({
+        ...fallback,
+        ...parsed,
+        prepWeapons: fallback.prepWeapons,
+        bossName: parsed?.bossName || fallback.bossName,
+      });
+    }
     return res.json(parsed);
   } catch (error: any) {
     console.warn("Boss generator using fallback due to:", error?.message || error);
