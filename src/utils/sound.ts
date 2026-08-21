@@ -176,6 +176,99 @@ class SoundController {
       osc.stop(now + 0.32);
     } catch {}
   }
+
+  // Ambient sound synthesis for Group Study Rooms
+  private ambientNodes: { [key: string]: { stop: () => void } } = {};
+
+  public startAmbientSound(type: 'lofi' | 'rain' | 'drone' | 'coffee') {
+    this.stopAmbientSound();
+    if (this.muted) return;
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+
+      if (type === 'drone' || type === 'lofi') {
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.value = type === 'lofi' ? 146.83 : 110.0; // D3 / A2
+        osc2.type = 'triangle';
+        osc2.frequency.value = type === 'lofi' ? 220.0 : 164.81; // A3 / E3
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 320;
+
+        gain.gain.value = 0.05;
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start();
+        osc2.start();
+
+        this.ambientNodes['current'] = {
+          stop: () => {
+            try {
+              osc1.stop();
+              osc2.stop();
+              gain.disconnect();
+            } catch {}
+          },
+        };
+      } else if (type === 'rain' || type === 'coffee') {
+        // Pink/Brown noise generator
+        const bufferSize = 2 * this.ctx.sampleRate;
+        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99 * b0 + white * 0.05;
+          b1 = 0.95 * b1 + white * 0.1;
+          b2 = 0.85 * b2 + white * 0.2;
+          output[i] = (b0 + b1 + b2) * 0.15;
+        }
+
+        const whiteNoise = this.ctx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+        whiteNoise.loop = true;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
+        filter.frequency.value = type === 'rain' ? 800 : 1200;
+
+        const gain = this.ctx.createGain();
+        gain.gain.value = 0.04;
+
+        whiteNoise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        whiteNoise.start();
+
+        this.ambientNodes['current'] = {
+          stop: () => {
+            try {
+              whiteNoise.stop();
+              gain.disconnect();
+            } catch {}
+          },
+        };
+      }
+    } catch {}
+  }
+
+  public stopAmbientSound() {
+    if (this.ambientNodes['current']) {
+      this.ambientNodes['current'].stop();
+      delete this.ambientNodes['current'];
+    }
+  }
 }
 
 export const sound = new SoundController();

@@ -17,7 +17,10 @@ import {
   Award,
   AlertCircle,
   BrainCircuit,
-  HeartPulse
+  HeartPulse,
+  Youtube,
+  Radio,
+  Users
 } from 'lucide-react';
 
 interface CommandCenterProps {
@@ -66,7 +69,29 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Quick AI Tactical Launch Button */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => {
+              sound.playClick();
+              onNavigateTab('lectures');
+            }}
+            className="flex items-center gap-1.5 rounded-xl border border-red-800/60 bg-red-950/30 px-3.5 py-2 text-xs font-bold text-red-300 hover:bg-red-950/60 transition-colors"
+          >
+            <Youtube className="h-4 w-4 text-red-400" />
+            <span>Video Lectures</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playClick();
+              onNavigateTab('studyrooms');
+            }}
+            className="flex items-center gap-1.5 rounded-xl border border-cyan-800/60 bg-cyan-950/30 px-3.5 py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-950/60 transition-colors"
+          >
+            <Users className="h-4 w-4 text-cyan-400" />
+            <span>Study Rooms</span>
+          </button>
+
           <button
             onClick={() => {
               sound.playClick();

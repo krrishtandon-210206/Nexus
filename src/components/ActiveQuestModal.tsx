@@ -13,7 +13,9 @@ import {
   RotateCcw, 
   Sparkles, 
   X,
-  Target
+  Target,
+  Youtube,
+  ExternalLink
 } from 'lucide-react';
 
 interface ActiveQuestModalProps {
@@ -29,6 +31,7 @@ export const ActiveQuestModal: React.FC<ActiveQuestModalProps> = ({
 }) => {
   const [secondsLeft, setSecondsLeft] = useState(quest.timeMinutes * 60);
   const [isRunning, setIsRunning] = useState(false);
+  const [showVideo, setShowVideo] = useState(Boolean(quest.videoLecture));
   const [subtasks, setSubtasks] = useState([
     { id: 1, text: 'Review core concepts and problem requirements', done: true },
     { id: 2, text: 'Implement key algorithm or written solution deliverables', done: false },
@@ -71,8 +74,8 @@ export const ActiveQuestModal: React.FC<ActiveQuestModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md animate-in fade-in">
-      <div className="w-full max-w-xl rounded-3xl border border-cyan-500/40 bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 p-6 sm:p-8 shadow-2xl shadow-cyan-500/10 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md animate-in fade-in overflow-y-auto">
+      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl border border-cyan-500/40 bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 p-6 sm:p-8 shadow-2xl shadow-cyan-500/10 space-y-5 my-auto">
         {/* Top Header */}
         <div className="flex items-start justify-between pb-4 border-b border-slate-800">
           <div>
@@ -95,6 +98,39 @@ export const ActiveQuestModal: React.FC<ActiveQuestModalProps> = ({
             ✕
           </button>
         </div>
+
+        {/* Video Lecture Preview (If available) */}
+        {quest.videoLecture && (
+          <div className="rounded-2xl border border-red-900/40 bg-red-950/20 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-red-300">
+                <Youtube className="h-4 w-4 text-red-500" />
+                <span>VIDEO LECTURE PREVIEW AVAILABLE</span>
+              </div>
+              <button
+                onClick={() => setShowVideo(!showVideo)}
+                className="text-xs font-bold text-cyan-400 hover:underline"
+              >
+                {showVideo ? 'Hide Player' : 'Show Video'}
+              </button>
+            </div>
+
+            {showVideo && (
+              <div className="aspect-video w-full overflow-hidden rounded-xl bg-black border border-slate-800 shadow-lg">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube-nocookie.com/embed/${quest.videoLecture.youtubeId}?rel=0`}
+                  title={quest.videoLecture.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
+            <p className="text-[11px] text-slate-300">
+              📺 <strong>{quest.videoLecture.title}</strong>
+            </p>
+          </div>
+        )}
 
         {/* Focus Timer */}
         <div className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950 p-4">
@@ -181,3 +217,4 @@ export const ActiveQuestModal: React.FC<ActiveQuestModalProps> = ({
     </div>
   );
 };
+

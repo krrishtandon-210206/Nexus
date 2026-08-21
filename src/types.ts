@@ -30,6 +30,12 @@ export interface Quest {
   completed: boolean;
   active?: boolean;
   steps?: QuestStep[];
+  videoLecture?: {
+    title: string;
+    youtubeUrl: string;
+    youtubeId: string;
+    channel?: string;
+  };
 }
 
 export interface PlayerStat {
@@ -174,3 +180,58 @@ export interface RapidFireQuestion {
   damage: number;
   xp: number;
 }
+
+export interface VideoLecture {
+  id: string;
+  title: string;
+  channel: string;
+  duration: string;
+  category: 'DSA' | 'SYSTEM DESIGN' | 'OPERATING SYSTEMS' | 'AI & ML' | 'WEB DEV' | 'CAREER & FINANCE';
+  youtubeId: string;
+  youtubeUrl: string;
+  thumbnail: string;
+  description: string;
+  topicsCovered: string[];
+  xpReward: number;
+  completed: boolean;
+  userNotes?: string;
+}
+
+export interface StudyRoomParticipant {
+  id: string;
+  name: string;
+  avatar: string;
+  status: string; // e.g. "Solving LeetCode Two-Pointers"
+  isUser?: boolean;
+  isMuted: boolean;
+  isCameraOn: boolean;
+  streakDays: number;
+  joinedAt: string;
+}
+
+export interface StudyRoomMessage {
+  id: string;
+  senderName: string;
+  senderAvatar: string;
+  text: string;
+  timestamp: string;
+  isSystem?: boolean;
+}
+
+export interface StudyRoom {
+  id: string;
+  name: string;
+  topic: string;
+  category: 'DSA & CODING' | 'EXAM CRAM' | 'SILENT POMODORO' | 'PROJECT SQUAD' | 'GENERAL STUDY';
+  membersCount: number;
+  maxMembers: number;
+  activeTimerMinutes: number;
+  timerMode: 'FOCUS' | 'BREAK';
+  isTimerRunning: boolean;
+  ambientSound: 'lofi' | 'rain' | 'drone' | 'coffee' | 'none';
+  isPrivate: boolean;
+  participants: StudyRoomParticipant[];
+  sharedNotes: string;
+  messages: StudyRoomMessage[];
+}
+

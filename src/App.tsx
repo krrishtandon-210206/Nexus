@@ -5,9 +5,20 @@ import {
   INITIAL_QUESTS, 
   INITIAL_BOSSES, 
   INITIAL_SKILL_NODES, 
-  INITIAL_ACHIEVEMENTS 
+  INITIAL_ACHIEVEMENTS,
+  INITIAL_LECTURES,
+  INITIAL_STUDY_ROOMS
 } from './data/initialData';
-import { PlayerProfile, PlayerStat, Quest, BossBattle, SkillNode, Achievement } from './types';
+import { 
+  PlayerProfile, 
+  PlayerStat, 
+  Quest, 
+  BossBattle, 
+  SkillNode, 
+  Achievement, 
+  VideoLecture, 
+  StudyRoom 
+} from './types';
 import { sound } from './utils/sound';
 import confetti from 'canvas-confetti';
 
@@ -28,6 +39,8 @@ import { AchievementsHall } from './components/AchievementsHall';
 import { RapidFireArena } from './components/RapidFireArena';
 import { ActiveQuestModal } from './components/ActiveQuestModal';
 import { JudgeDemoTour } from './components/JudgeDemoTour';
+import { VideoLectures } from './components/VideoLectures';
+import { GroupStudyRooms } from './components/GroupStudyRooms';
 
 import { Sparkles, Trophy, Flame, ShieldAlert, Award, Zap } from 'lucide-react';
 
@@ -39,6 +52,8 @@ export default function App() {
   const [bosses, setBosses] = useState<BossBattle[]>(INITIAL_BOSSES);
   const [skillNodes, setSkillNodes] = useState<SkillNode[]>(INITIAL_SKILL_NODES);
   const [achievements, setAchievements] = useState<Achievement[]>(INITIAL_ACHIEVEMENTS);
+  const [lectures, setLectures] = useState<VideoLecture[]>(INITIAL_LECTURES);
+  const [studyRooms, setStudyRooms] = useState<StudyRoom[]>(INITIAL_STUDY_ROOMS);
 
   // Modals & Tour States
   const [activeQuestModal, setActiveQuestModal] = useState<Quest | null>(null);
@@ -49,6 +64,19 @@ export default function App() {
   const showToast = (title: string, subtitle: string, icon = '✨') => {
     setToastMessage({ title, subtitle, icon });
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  // Reset Data Handler
+  const handleResetData = () => {
+    setPlayer(INITIAL_PLAYER);
+    setStats(INITIAL_STATS);
+    setQuests(INITIAL_QUESTS);
+    setBosses(INITIAL_BOSSES);
+    setSkillNodes(INITIAL_SKILL_NODES);
+    setAchievements(INITIAL_ACHIEVEMENTS);
+    setLectures(INITIAL_LECTURES);
+    setStudyRooms(INITIAL_STUDY_ROOMS);
+    showToast('🔄 Demo Data Restored', 'Reset character and missions to fresh hackathon state.');
   };
 
   // XP & Level Progression Engine
@@ -95,6 +123,26 @@ export default function App() {
         nextEvolution: nextEvo,
       };
     });
+  };
+
+  // Lecture Completion Handler
+  const handleCompleteLecture = (lectureId: string, xpReward: number) => {
+    setLectures((prev) =>
+      prev.map((lec) => (lec.id === lectureId ? { ...lec, completed: true } : lec))
+    );
+    awardXp(xpReward, 'Completed YouTube Video Lecture');
+    showToast(`📺 Lecture Mastered (+${xpReward} XP)`, 'Knowledge synthesized into RPG character power.');
+  };
+
+  const handleAddCustomLecture = (newLec: VideoLecture) => {
+    setLectures((prev) => [newLec, ...prev]);
+    showToast('📺 YouTube Lecture Added', newLec.title);
+  };
+
+  // Create Room Handler
+  const handleCreateRoom = (newRoom: StudyRoom) => {
+    setStudyRooms((prev) => [newRoom, ...prev]);
+    showToast('🛡️ Group Study Room Created', newRoom.name);
   };
 
   // Quest Completion Handlers
@@ -205,14 +253,17 @@ export default function App() {
       <Navbar
         player={player}
         activeTab={activeTab}
-        onNavigate={(tab) => {
+        setActiveTab={(tab) => {
           sound.playClick();
           setActiveTab(tab);
         }}
-        onStartTour={() => {
+        onRestoreEnergy={handleRestoreEnergy}
+        onResetData={handleResetData}
+        onStartJudgeDemo={() => {
           sound.playClick();
           setShowJudgeTour(true);
         }}
+        todayXp={player.todayXp}
       />
 
       {/* Main Viewport Content Router */}
@@ -267,6 +318,25 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'lectures' && (
+          <VideoLectures
+            lectures={lectures}
+            onCompleteLecture={handleCompleteLecture}
+            onAddCustomLecture={handleAddCustomLecture}
+          />
+        )}
+
+        {activeTab === 'studyrooms' && (
+          <GroupStudyRooms
+            rooms={studyRooms}
+            onAwardXp={(amount, reason) => {
+              awardXp(amount, reason);
+              showToast(`🛡️ Group Study XP (+${amount} XP)`, reason);
+            }}
+            onCreateRoom={handleCreateRoom}
+          />
+        )}
+
         {activeTab === 'bosses' && (
           <BossBattles
             bosses={bosses}
@@ -311,7 +381,9 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'future' && <FutureSelf player={player} />}
+        {activeTab === 'futureself' || activeTab === 'future' ? (
+          <FutureSelf player={player} />
+        ) : null}
 
         {activeTab === 'campus' && (
           <CampusWorld
@@ -332,14 +404,14 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'team' && (
+        {activeTab === 'squad' || activeTab === 'team' ? (
           <TeamMode
             onCompleteSquadQuest={(xp, title) => {
               awardXp(xp, title);
               showToast(`👥 Squad Deliverable Completed (+${xp} XP)`, title);
             }}
           />
-        )}
+        ) : null}
 
         {activeTab === 'achievements' && (
           <AchievementsHall achievements={achievements} />
@@ -374,3 +446,4 @@ export default function App() {
     </div>
   );
 }
+

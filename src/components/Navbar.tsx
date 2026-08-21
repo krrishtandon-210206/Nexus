@@ -17,7 +17,9 @@ import {
   DollarSign, 
   BrainCircuit, 
   ChevronRight,
-  HeartPulse
+  HeartPulse,
+  Youtube,
+  Radio
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -51,6 +53,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'command', label: 'Command Center', icon: Compass },
     { id: 'gamemaster', label: 'AI Game Master', icon: BrainCircuit, badge: 'AI' },
     { id: 'quests', label: 'Quest Board', icon: Swords },
+    { id: 'lectures', label: 'Video Lectures', icon: Youtube, badge: 'FREE' },
+    { id: 'studyrooms', label: 'Study Rooms', icon: Radio, badge: 'LIVE' },
     { id: 'bosses', label: 'Boss Battles', icon: Swords, badge: 'HOT' },
     { id: 'skilltree', label: 'Skill Tree', icon: FolderGit2 },
     { id: 'career', label: 'Career Radar', icon: Target },
