@@ -1,0 +1,6 @@
+{
+  "name": "NEXUS RPG",
+  "description": "Turn your student life into a game. AI Game Master, personalized quests, epic boss battles, interactive skill trees, and career readiness.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
