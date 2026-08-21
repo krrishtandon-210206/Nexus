@@ -1,98 +1,412 @@
 # ⚔️ NEXUS RPG: Turn Your Student Life Into a Game
 
 > **"Build the future you."**
-> A hackathon-winning, production-grade AI-powered Student Life Operating System that converts real-world academic coursework, skill mastery, career preparation, and personal stamina into an immersive RPG progression framework.
+> NEXUS RPG is a student productivity and progression system that turns coursework, skill development, exam preparation, and career goals into an interactive RPG experience.
 
-🎮 **Live Demo:** [https://nexus-rpg.ai.studio](https://nexus-rpg.ai.studio)
+🎮 **Live Demo:** https://nexus-rpg.ai.studio
 
 ---
 
 ## 🌟 Core Concept & Product Loop
 
-NEXUS RPG replaces superficial gamification and disconnected chatbots with a unified, game-native interface where real student achievements fuel character evolution:
+NEXUS RPG treats student life like a progression-based game.
 
+Instead of managing assignments, exams, skills, and career preparation across disconnected tools, students get a single system where real-world progress drives their character progression.
+
+```text
+ASSESS → PLAN → QUEST → COMPLETE → EARN XP → UNLOCK SKILLS → DEFEAT BOSSES → LEVEL UP
 ```
-ASSESS → PLAN → QUEST → COMPLETE → EARN XP → UNLOCK SKILLS → DEFEAT BOSSES → LEVEL UP → CAREER READINESS
+
+Every completed assignment, mastered concept, solved problem, study session, and interview preparation task contributes to the student's progression.
+
+The goal isn't to make studying feel like a game for its own sake.
+
+The goal is to make **long-term progress visible, structured, and motivating.**
+
+---
+
+# 🚀 Key Features & Systems
+
+## 1. 🎯 Quest Planner & Tactical Recommendations
+
+NEXUS converts a student's workload into actionable quests.
+
+* Select how much time is available: **30m, 60m, 120m**
+* Consider current energy and workload
+* Prioritize tasks based on deadlines and importance
+* Identify neglected skills
+* Break large academic goals into smaller missions
+* Assign XP based on difficulty and impact
+
+For example:
+
+> **You have 60 minutes + low energy + DSA exam approaching**
+
+The system can prioritize:
+
+```text
+Quest 1 → Revise Binary Trees       +40 XP
+Quest 2 → Solve 3 Tree Problems     +60 XP
+Quest 3 → Review Mistakes           +30 XP
 ```
 
-Every real assignment submitted, algorithm mastered, technical interview practiced, and free video lecture synthesized directly levels up your character, unlocks new nodes on the **Skill Tree**, and defeats looming semester **Boss Battles**.
+The recommendation engine primarily uses structured rules, deadlines, priorities, and skill data.
+
+An optional AI layer can improve personalization when available.
 
 ---
 
-## 🚀 Key Features & Systems
+## 2. 📺 Free Video Learning
 
-### 1. 🤖 AI Game Master & Tactical Recommender
-* **Strategic Session Optimization**: Calculates your available time budget (e.g. 30m, 60m, 120m) and energy levels to recommend high-impact quests.
-* **Contextual Gap Targeting**: Automatically detects your lowest-rated skills (e.g., Data Structures & Algorithms at 18%) and urgent deadlines, generating custom actionable missions with verified XP yields.
-* **Resilient Model Integration**: Powered by Google Gemini 2.5/Flash with zero-latency contextual fallback heuristics to ensure continuous availability.
+Turn existing educational content into RPG quests.
 
-### 2. 📺 Free Video Lectures with Interactive Previews
-* **Curated Tech & CS Curriculum**: Hand-picked, high-yield YouTube video lectures covering:
-  - Data Structures & Algorithms (Binary Trees, Graphs, Sorting)
-  - Operating Systems (Deadlocks, CPU Scheduling, Virtual Memory)
-  - Database Management Systems (SQL Normalization, Indexing)
-  - Fullstack Cloud Development & System Design
-* **Embedded YouTube Video Player**: High-definition player with timestamps, key takeaway bullets, and instant "Mark as Mastered (+XP)" completion mechanics.
-* **Custom Video Importer**: Paste any YouTube video URL or ID to generate a quest and add it to your curriculum.
+NEXUS provides curated technical learning resources covering areas such as:
 
-### 3. 🛡️ Online Group Study Rooms & Co-Working Parties
-* **Multiplayer Accountability**: Join or create custom study guilds (e.g., *DSA Grinders*, *OS Exam Survivors*, *Web3 Builders*).
-* **Live Study Pomodoro Timer**: Synchronized 25m Focus / 5m Rest intervals with audio notifications.
-* **Party Member Status & Audio Cues**: See peers actively studying in real-time, share tactical study notes, and earn cooperative XP bonuses upon timer completion.
+* Data Structures & Algorithms
+* Operating Systems
+* Database Management Systems
+* Computer Networks
+* System Design
+* Full-Stack Development
+* Cloud Development
 
-### 4. 🐉 Boss Battles & Rapid-Fire Combat Arena
-* **Academic Bosses**: Convert terrifying semester exams and final projects into colossal bosses (e.g. *Titan of Operating Systems*, *Dragon of Distributed Systems*).
-* **Targeted Boss Prep Weapons**: Execute specific prep quests (Past Papers, Concept Drills) to chip away at the Boss HP.
-* **Rapid-Fire Quiz Arena**: Fast-paced, timed multiple-choice combat duels that isolate weak areas and instantly generate remedial follow-up quests.
+Each learning resource can become a quest:
 
-### 5. 🎯 Career Radar & Resume Quest Synthesizer
-* **Gap Analysis**: Paste any resume or target job description to compute a Career Readiness Score (0–100%).
-* **Actionable Quest Conversion**: Transforms missing skills and resume gaps into tangible RPG missions with estimated impact metrics.
+```text
+WATCH → LEARN → COMPLETE → MARK MASTERED → EARN XP
+```
 
-### 6. 🔮 Future Self Simulator
-* **Probabilistic Trajectory Forecasting**: Compares 3 hypothetical future outcomes (*Keep Going*, *Level Up*, *Beast Mode*) at 7-day, 30-day, 90-day, and 6-month horizons based on current study habits.
+Features include:
 
-### 7. ⚖️ Anti-XP Farming Protection
-* **Skill Multipliers**: Prevents students from inflating levels with low-effort tasks by detecting repetitive easy quests and redirecting energy toward high-yield algorithmic challenges.
+* Embedded YouTube player
+* Key takeaways
+* Timestamps
+* Progress tracking
+* Mastery tracking
+* XP rewards
+
+### Custom Video Import
+
+Students can also paste a YouTube URL and convert the resource into a learning quest.
 
 ---
 
-## 🛠️ Architecture & Tech Stack
+## 3. 🛡️ Group Study Rooms
 
-* **Frontend**: React 18+ with TypeScript, Tailwind CSS, Lucide Icons, and Motion animations.
-* **Backend**: Express 4+ server running on Node.js / tsx.
-* **AI Intelligence**: `@google/genai` TypeScript SDK interfacing with Gemini 2.5 models for dynamic Game Master plans, boss generation, quiz duels, and resume parsing.
-* **Audio & Visual Effects**: Web Audio API synthesizer for retro 8-bit sound effects (level up, sword swings, boss hits, quest completions) and Canvas Confetti celebration particle systems.
+Studying becomes more effective when there is accountability.
+
+Students can create or join study groups such as:
+
+* DSA Grinders
+* OS Exam Survivors
+* Web Development Guild
+* Competitive Programming Squad
+
+### Focus Sessions
+
+Built-in Pomodoro sessions provide:
+
+```text
+25 MIN FOCUS
+      ↓
+5 MIN BREAK
+      ↓
+REPEAT
+```
+
+Members can see who is currently studying and complete sessions together.
+
+Completing a group session can provide cooperative XP bonuses.
 
 ---
 
-## 💻 Getting Started & Local Development
+## 4. 🐉 Boss Battles
 
-### Prerequisites
-- Node.js 18+
-- npm or yarn
+Large academic goals become RPG bosses.
 
-### Installation
+Examples:
+
+```text
+🐉 Dragon of Data Structures
+⚔️ Titan of Operating Systems
+🧙 Guardian of Computer Networks
+💀 Final Exam Boss
+```
+
+Each boss has an HP bar representing the amount of preparation still required.
+
+Students damage the boss by completing preparation quests:
+
+```text
+Past Paper        → -15 HP
+Concept Revision  → -10 HP
+Practice Problems → -20 HP
+Mock Test         → -30 HP
+```
+
+This creates a visual representation of exam preparation instead of treating the exam as one large task.
+
+---
+
+## 5. ⚔️ Rapid-Fire Quiz Arena
+
+The Quiz Arena turns revision into short combat rounds.
+
+Students answer timed questions across different subjects.
+
+The system tracks:
+
+* Accuracy
+* Response time
+* Weak topics
+* Strong topics
+* Repeated mistakes
+
+Weak areas can automatically generate additional quests.
+
+For example:
+
+```text
+DBMS Quiz
+     ↓
+Normalization: 40%
+     ↓
+Weak Area Detected
+     ↓
+Revision Quest Created
+     ↓
+Practice Questions
+```
+
+---
+
+## 6. 🌳 Skill Tree
+
+Academic and professional skills are represented as interconnected skill nodes.
+
+Example:
+
+```text
+                 COMPUTER SCIENCE
+                        │
+          ┌─────────────┼─────────────┐
+          ↓             ↓             ↓
+         DSA            OS           DBMS
+          │             │             │
+      ┌───┴───┐       Memory       SQL
+      ↓       ↓      Management      │
+    Trees    Graphs                   ↓
+                                  Indexing
+```
+
+Students unlock nodes by demonstrating progress rather than simply completing arbitrary tasks.
+
+This makes progression more meaningful than a simple XP counter.
+
+---
+
+## 7. 🎯 Career Radar
+
+NEXUS connects academic progression with career preparation.
+
+Students can provide:
+
+* Their current skills
+* Resume
+* Target role
+* Job description
+
+The system identifies gaps and converts them into quests.
+
+Example:
+
+```text
+TARGET ROLE
+Software Engineering Intern
+
+Missing Skills
+├── Data Structures
+├── SQL
+├── REST APIs
+└── System Design
+
+         ↓
+
+QUESTS
+
+Solve 20 DSA problems       +100 XP
+Build a REST API             +150 XP
+Practice SQL queries         +80 XP
+Study system design basics  +100 XP
+```
+
+The Career Radar provides a clearer picture of what the student should work on next.
+
+---
+
+## 8. 🔮 Future Self Simulator
+
+The Future Self Simulator shows how consistent habits can affect long-term progression.
+
+Students can compare different activity levels:
+
+```text
+KEEP GOING
+Current study pattern
+
+LEVEL UP
+Consistent daily progress
+
+BEAST MODE
+High-intensity sustained progress
+```
+
+The simulator can show projected progress across:
+
+* 7 days
+* 30 days
+* 90 days
+* 6 months
+
+The purpose is not to predict the future perfectly, but to make the consequences of consistency easier to visualize.
+
+---
+
+## 9. ⚖️ Anti-XP Farming
+
+A progression system only works if XP represents meaningful progress.
+
+NEXUS therefore prevents students from repeatedly farming easy tasks.
+
+The system can consider:
+
+* Task difficulty
+* Skill relevance
+* Repetition
+* Completion frequency
+* Learning impact
+
+Repeated low-value tasks gradually provide diminishing rewards while higher-impact challenges receive greater XP.
+
+This keeps progression focused on **actual improvement rather than grinding.**
+
+---
+
+# 🧠 How the Intelligence Works
+
+NEXUS does not depend entirely on AI.
+
+The core application works through structured systems:
+
+```text
+Student Data
+     ↓
+Deadlines + Skills + Energy + Priorities
+     ↓
+Rule-Based Quest Selection
+     ↓
+Quest Generation
+     ↓
+XP + Skill Progression
+     ↓
+Long-Term Tracking
+```
+
+AI can be used as an additional layer for tasks where natural-language reasoning is useful:
+
+* Creating personalized study plans
+* Generating quiz questions
+* Interpreting resumes
+* Suggesting learning resources
+* Generating customized quests
+
+This means the core product remains functional even without an AI API.
+
+---
+
+# 🛠️ Architecture & Tech Stack
+
+### Frontend
+
+* React 18+
+* TypeScript
+* Tailwind CSS
+* Lucide Icons
+* Motion animations
+
+### Backend
+
+* Node.js
+* Express
+* TypeScript / TSX
+
+### Core Product Systems
+
+* Quest management
+* XP and leveling
+* Skill tree
+* Boss progression
+* Pomodoro sessions
+* Quiz engine
+* Career scoring
+* Progress tracking
+* Recommendation rules
+
+### Optional AI Layer
+
+* Google Gemini
+* `@google/genai`
+
+AI is used where it adds value rather than being required for every feature.
+
+### Audio & Visual Effects
+
+* Web Audio API
+* Canvas Confetti
+* RPG-style sound effects
+* Progress animations
+
+---
+
+# 💻 Getting Started
+
+## Prerequisites
+
+* Node.js 18+
+* npm or yarn
+
+## Installation
+
 ```bash
-# 1. Clone the repository
+# Clone the repository
 git clone <repo-url>
+
+# Enter the project
 cd nexus-rpg
 
-# 2. Install dependencies
+# Install dependencies
 npm install
 
-# 3. Configure environment variables
-# Copy .env.example to .env and add your Gemini API key (optional; intelligent fallbacks provided)
+# Configure environment variables
 cp .env.example .env
 ```
 
-### Running in Development
+The Gemini API key is optional.
+
+## Running in Development
+
 ```bash
 npm run dev
 ```
-The server will start on `http://localhost:3000`.
 
-### Building for Production
+The server will start on:
+
+```text
+http://localhost:3000
+```
+
+## Building for Production
+
 ```bash
 npm run build
 npm run start
@@ -100,25 +414,73 @@ npm run start
 
 ---
 
-## ⚙️ Environment Variables
+# ⚙️ Environment Variables
 
-| Variable | Description | Required |
-|---|---|---|
-| `GEMINI_API_KEY` | Google Gemini API key for dynamic AI Game Master reasoning, boss generation, and resume analysis. | Optional (Heuristic fallback active when key is absent) |
+| Variable         | Description                                                                      | Required |
+| ---------------- | -------------------------------------------------------------------------------- | -------- |
+| `GEMINI_API_KEY` | Optional AI assistance for personalization, quiz generation, and resume analysis | No       |
+
+NEXUS includes non-AI fallback logic for core functionality.
 
 ---
 
-## 🏆 Hackathon Judges' Quick Tour
+# 🏆 Hackathon Judges' Quick Tour
 
-Experience the live app at [https://nexus-rpg.ai.studio](https://nexus-rpg.ai.studio) or click the **"JUDGES QUICK TOUR"** button in the top navigation banner to test-drive all 8 core mechanics in one seamless interactive showcase:
-1. **Command Center**: View Character Vitals, Energy Reserves, and Today's Agenda.
-2. **AI Game Master**: Request an instant personalized quest strategy based on your time constraints.
-3. **Quest Board**: Execute high-impact coursework tasks.
-4. **Video Lectures**: Watch embedded YouTube CS tutorials and claim XP.
-5. **Group Study Rooms**: Start a Pomodoro co-study sprint with your squad.
-6. **Boss Battles**: Deal damage to semester final exams.
-7. **Skill Tree**: Unlock hexagonal skill constellations.
-8. **Career Radar**: Analyze resume readiness and simulate your Future Self.
+Experience the live app at:
+
+**https://nexus-rpg.ai.studio**
+
+Or use the **JUDGES QUICK TOUR** button to explore the main systems.
+
+### 1. Command Center
+
+View character stats, energy, quests, and today's objectives.
+
+### 2. Quest Planner
+
+Generate a focused study plan based on available time and priorities.
+
+### 3. Quest Board
+
+Complete academic and skill-development missions.
+
+### 4. Video Learning
+
+Learn from curated technical lectures and claim XP.
+
+### 5. Study Rooms
+
+Join a Pomodoro session with other students.
+
+### 6. Boss Battles
+
+Turn exams and major academic goals into visible progression targets.
+
+### 7. Skill Tree
+
+Track and unlock technical skills.
+
+### 8. Career Radar
+
+Identify career gaps and convert them into actionable quests.
+
+---
+
+# 🎮 Why NEXUS?
+
+Most productivity tools answer:
+
+> **"What do I need to do?"**
+
+Most learning platforms answer:
+
+> **"What should I learn?"**
+
+NEXUS tries to answer:
+
+> **"What should I do next, why does it matter, and how far have I progressed?"**
+
+By combining productivity, learning, accountability, and career preparation into a single progression system, NEXUS turns student development into something that can be **seen, measured, and played.**
 
 ---
 
